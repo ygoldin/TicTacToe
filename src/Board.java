@@ -1,16 +1,24 @@
 public class Board {
+	public static final int SIZE = 3;
 	private char[][] grid;
-	private static final int SIZE = 3;
 	private static final char[] PLAYERS = {'X', 'O'};
 	private int turn;
 	private int movesMade;
 	
 	//creates a new empty tic-tac-toe board with the given player starting first
-	public Board(boolean p1Starts) {
-		grid = new char[SIZE][SIZE];
-		if(!p1Starts) {
-			turn = 1;
+	//1 means player1 starts first, 2 means player2 starts first
+	//throws IllegalArgumentException if an invalid player number is passed in
+	public Board(int whoStarts) {
+		if(whoStarts != 1 && whoStarts != 2) {
+			throw new IllegalArgumentException("invalid starting player");
 		}
+		grid = new char[SIZE][SIZE];
+		turn = whoStarts;
+	}
+	
+	private Board(int whoStarts, char[][] grid) {
+		this.grid = grid;
+		turn = whoStarts;
 	}
 	
 	// returns whether a spot in the tic-tac-toe board is empty
@@ -80,6 +88,16 @@ public class Board {
 						(grid[1][1] == player && grid[0][0] == player);
 			}
 		}
+	}
+	
+	public Board copy() {
+		char[][] copyGrid = new char[SIZE][SIZE];
+		for(int r = 0; r < SIZE; r++) {
+			for(int c = 0; c < SIZE; c++) {
+				copyGrid[r][c] = grid[r][c];
+			}
+		}
+		return new Board(turn, copyGrid);
 	}
 	
 	// returns true if it's p1s turn, false if p2s
