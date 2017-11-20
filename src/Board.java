@@ -3,7 +3,7 @@ public class Board {
 	private static final int SIZE = 3;
 	private static final char[] PLAYERS = {'X', 'O'};
 	private int turn;
-	private int emptySpots;
+	private int movesMade;
 	
 	//creates a new empty tic-tac-toe board with the given player starting first
 	public Board(boolean p1Starts) {
@@ -13,9 +13,6 @@ public class Board {
 		} else {
 			turn = 1;
 		}
-		emptySpots = SIZE*SIZE;
-		
-		
 	}
 	
 	// returns whether a spot in the tic-tac-toe board is empty
@@ -37,7 +34,7 @@ public class Board {
 			throw new IllegalArgumentException("not empty");
 		}
 		grid[row-1][col-1] = PLAYERS[turn];
-		boolean won = causedWin(row-1, col-1, PLAYERS[turn]);
+		boolean won = (movesMade > 4) && causedWin(row-1, col-1, PLAYERS[turn]);
 		turn = (turn+1)%2;
 		return won;
 	}
@@ -93,6 +90,6 @@ public class Board {
 	
 	// returns true if the board is filled up
 	public boolean isFull() {
-		return emptySpots == 0;
+		return movesMade == SIZE*SIZE;
 	}
 }
