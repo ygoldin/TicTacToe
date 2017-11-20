@@ -8,9 +8,7 @@ public class Board {
 	//creates a new empty tic-tac-toe board with the given player starting first
 	public Board(boolean p1Starts) {
 		grid = new char[SIZE][SIZE];
-		if(p1Starts) {
-			turn = 0;
-		} else {
+		if(!p1Starts) {
 			turn = 1;
 		}
 	}
@@ -36,6 +34,7 @@ public class Board {
 		grid[row-1][col-1] = PLAYERS[turn];
 		boolean won = (movesMade > 4) && causedWin(row-1, col-1, PLAYERS[turn]);
 		turn = (turn+1)%2;
+		movesMade++;
 		return won;
 	}
 	
@@ -85,7 +84,7 @@ public class Board {
 	
 	// returns true if it's p1s turn, false if p2s
 	public boolean p1sTurn() {
-		return turn == 1;
+		return turn == 0;
 	}
 	
 	// returns true if the board is filled up
