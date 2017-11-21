@@ -1,16 +1,28 @@
 public class Board {
+	public static final int SIZE = 3;
 	private char[][] grid;
-	private static final int SIZE = 3;
 	private static final char[] PLAYERS = {'X', 'O'};
 	private int turn;
 	private int movesMade;
+	private int winner;
 	
 	//creates a new empty tic-tac-toe board with the given player starting first
-	public Board(boolean p1Starts) {
-		grid = new char[SIZE][SIZE];
-		if(!p1Starts) {
-			turn = 1;
+	//1 means player1 starts first, 2 means player2 starts first
+	//throws IllegalArgumentException if an invalid player number is passed in
+	public Board(int whoStarts) {
+		this(whoStarts-1, new char[SIZE][SIZE]);
+	}
+	
+	//creates a new empty tic-tac-toe board with the given player starting first
+	//0 means player1 starts first, 1 means player2 starts first
+	//throws IllegalArgumentException if an invalid player number is passed in
+	//sets the board to have the given grid layout
+	private Board(int whoStarts, char[][] grid) {
+		if(whoStarts != 0 && whoStarts != 1) {
+			throw new IllegalArgumentException("invalid starting player");
 		}
+		this.grid = grid;
+		turn = whoStarts;
 	}
 	
 	// returns whether a spot in the tic-tac-toe board is empty
@@ -27,25 +39,31 @@ public class Board {
 	// returns true if the move resulted in a win
 	// returns false if not
 	// throws IllegalArgumentException if the given spot is outside of the grid or is not empty
-	public boolean makeMove(int row, int col) {
+	// throws IllegalStateException if the game is over
+	public void makeMove(int row, int col) {
 		if(!isEmptySpot(row, col)) {
 			throw new IllegalArgumentException("not empty");
 		}
+		if(isGameOver()) {
+			throw new IllegalStateException("game over");
+		}
 		grid[row-1][col-1] = PLAYERS[turn];
-		boolean won = (movesMade > 4) && causedWin(row-1, col-1, PLAYERS[turn]);
+		boolean won = (movesMade > 4) && causedWin(row-1,col-1, PLAYERS[turn]);
+		if(won) {
+			winner = turn+1;
+		}
 		turn = (turn+1)%2;
 		movesMade++;
-		return won;
 	}
 	
 	// returns true if the given move caused the given player to win
-	private boolean causedWin(int r, int c, char player) {
-		if(r == 0) {
-			if(c == 0) {
+	private boolean causedWin(int row, int col, char player) {
+		if(row == 0) {
+			if(col == 0) {
 				return (grid[0][1] == player && grid[0][2] == player) ||
 						(grid[1][0] == player && grid[2][0] == player) ||
 						(grid[1][1] == player && grid[2][2] == player);
-			} else if(c == 1) {
+			} else if(col == 1) {
 				return (grid[0][0] == player && grid[0][2] == player) ||
 						(grid[1][1] == player && grid[2][1] == player);
 			} else {
@@ -53,11 +71,11 @@ public class Board {
 						(grid[1][2] == player && grid[2][2] == player) ||
 						(grid[1][1] == player && grid[2][0] == player);
 			}
-		} else if(r == 1) {
-			if(c == 0) {
+		} else if(row == 1) {
+			if(col == 0) {
 				return (grid[0][0] == player && grid[2][0] == player) ||
 						(grid[1][1] == player && grid[1][2] == player);
-			} else if(c == 1) {
+			} else if(col == 1) {
 				return (grid[0][0] == player && grid[2][2] == player) ||
 						(grid[2][0] == player && grid[0][2] == player) ||
 						(grid[0][1] == player && grid[2][1] == player) ||
@@ -67,11 +85,11 @@ public class Board {
 						(grid[0][2] == player && grid[2][2] == player);
 			}
 		} else {
-			if(c == 0) {
+			if(col == 0) {
 				return (grid[0][0] == player && grid[1][0] == player) ||
 						(grid[2][1] == player && grid[2][2] == player) ||
 						(grid[1][1] == player && grid[0][2] == player);
-			} else if(c == 1) {
+			} else if(col == 1) {
 				return (grid[2][0] == player && grid[2][2] == player) ||
 						(grid[0][1] == player && grid[1][1] == player);
 			} else {
@@ -82,13 +100,38 @@ public class Board {
 		}
 	}
 	
-	// returns true if it's p1s turn, false if p2s
-	public boolean p1sTurn() {
-		return turn == 0;
+	// returns a copy of the current board
+	public Board copy() {
+		char[][] copyGrid = new char[SIZE][SIZE];
+		for(int r = 0; r < SIZE; r++) {
+			for(int c = 0; c < SIZE; c++) {
+				copyGrid[r][c] = grid[r][c];
+			}
+		}
+		return new Board(turn, copyGrid);
+	}
+	
+	// returns 1 if it's p1s turn, 2 if p2s
+	public int curPlayerTurn() {
+		return turn + 1;
 	}
 	
 	// returns true if the board is filled up
 	public boolean isFull() {
 		return movesMade == SIZE*SIZE;
+	}
+	
+	// returns true if the game is over (a draw or victory)
+	public boolean isGameOver() {
+		return isFull() || winner != 0;
+	}
+	
+	//returns 1 if player1 won, 2 if player2 won
+	//throws IllegalStateException if the game is not over
+	public int winner() {
+		if(!isGameOver()) {
+			throw new IllegalStateException("game not over");
+		}
+		return winner;
 	}
 }
