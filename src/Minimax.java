@@ -23,13 +23,13 @@ public class Minimax {
 				if(!board.isFull()) {//game over when it becomes your turn -> you lost
 					return new BestMove(null, -1);
 				}
-				return new BestMove(null, 0);
+				return new BestMove(null, 0); //board is full -> draw
 			}
 			List<GridPosition> possibleMoves = new ArrayList<GridPosition>();
 			for(int r = 0; r < Board.SIZE; r++) {
 				for(int c = 0; c < Board.SIZE; c++) {
 					GridPosition cur = new GridPosition(r, c);
-					if(board.isEmptySpot(cur)) {
+					if(board.isEmptySpot(cur.row, cur.col)) {
 						possibleMoves.add(cur);
 					}
 				}
@@ -38,18 +38,19 @@ public class Minimax {
 			List<SearchTask> tasks = new ArrayList<SearchTask>();
 			GridPosition firstMove = possibleMoves.get(0);
 			Board boardCopy = board.copy();
-			boardCopy.makeMove(firstMove);
+			boardCopy.makeMove(firstMove.row, firstMove.col);
 			SearchTask first = new SearchTask(boardCopy);
 			for(int i = 1; i < possibleMoves.size(); i++) {
 				boardCopy = board.copy();
-				boardCopy.makeMove(possibleMoves.get(i));
-				SearchTask cur = new SearchTask(boardCopy);
-				cur.fork();
-				tasks.add(cur);
+				GridPosition cur = possibleMoves.get(i);
+				boardCopy.makeMove(cur.row, cur.col);
+				SearchTask curTask = new SearchTask(boardCopy);
+				curTask.fork();
+				tasks.add(curTask);
 			}
 			BestMove best = first.compute();
 			GridPosition bestMove = firstMove;
-			int bestValue = best.gameResult;
+			int bestValue = -best.gameResult;
 			for(int i = 0; i < tasks.size(); i++) {
 				int curResult = -tasks.get(i).join().gameResult;
 				if(curResult > bestValue) {
@@ -58,8 +59,7 @@ public class Minimax {
 				}
 			}
 			return new BestMove(bestMove, bestValue);
-		}
-		
+		} 
 	}
 	
 	private static class BestMove {

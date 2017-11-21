@@ -24,11 +24,11 @@ public class Board {
 	
 	// returns whether a spot in the tic-tac-toe board is empty
 	// throws IllegalArgumentException if the given spot is outside of the grid
-	public boolean isEmptySpot(GridPosition pos) {
-		if(pos.row < 0 || pos.row >= SIZE || pos.col < 0 || pos.col >= SIZE) {
+	public boolean isEmptySpot(int row, int col) {
+		if(row < 1 || row > SIZE || col < 1 || col > SIZE) {
 			throw new IllegalArgumentException("invalid location");
 		}
-		char cur = grid[pos.row-1][pos.col-1];
+		char cur = grid[row-1][col-1];
 		return cur != PLAYERS[0] && cur != PLAYERS[1];
 	}
 	
@@ -37,15 +37,15 @@ public class Board {
 	// returns false if not
 	// throws IllegalArgumentException if the given spot is outside of the grid or is not empty
 	// throws IllegalStateException if the game is over
-	public void makeMove(GridPosition pos) {
-		if(!isEmptySpot(pos)) {
+	public void makeMove(int row, int col) {
+		if(!isEmptySpot(row, col)) {
 			throw new IllegalArgumentException("not empty");
 		}
 		if(isGameOver()) {
 			throw new IllegalStateException("game over");
 		}
-		grid[pos.row][pos.col] = PLAYERS[turn];
-		boolean won = (movesMade > 4) && causedWin(pos, PLAYERS[turn]);
+		grid[row-1][col-1] = PLAYERS[turn];
+		boolean won = (movesMade > 4) && causedWin(row-1,col-1, PLAYERS[turn]);
 		if(won) {
 			winner = turn+1;
 		}
@@ -54,13 +54,13 @@ public class Board {
 	}
 	
 	// returns true if the given move caused the given player to win
-	private boolean causedWin(GridPosition move, char player) {
-		if(move.row == 0) {
-			if(move.col == 0) {
+	private boolean causedWin(int row, int col, char player) {
+		if(row == 0) {
+			if(col == 0) {
 				return (grid[0][1] == player && grid[0][2] == player) ||
 						(grid[1][0] == player && grid[2][0] == player) ||
 						(grid[1][1] == player && grid[2][2] == player);
-			} else if(move.col == 1) {
+			} else if(col == 1) {
 				return (grid[0][0] == player && grid[0][2] == player) ||
 						(grid[1][1] == player && grid[2][1] == player);
 			} else {
@@ -68,11 +68,11 @@ public class Board {
 						(grid[1][2] == player && grid[2][2] == player) ||
 						(grid[1][1] == player && grid[2][0] == player);
 			}
-		} else if(move.row == 1) {
-			if(move.col == 0) {
+		} else if(row == 1) {
+			if(col == 0) {
 				return (grid[0][0] == player && grid[2][0] == player) ||
 						(grid[1][1] == player && grid[1][2] == player);
-			} else if(move.col == 1) {
+			} else if(col == 1) {
 				return (grid[0][0] == player && grid[2][2] == player) ||
 						(grid[2][0] == player && grid[0][2] == player) ||
 						(grid[0][1] == player && grid[2][1] == player) ||
@@ -82,11 +82,11 @@ public class Board {
 						(grid[0][2] == player && grid[2][2] == player);
 			}
 		} else {
-			if(move.col == 0) {
+			if(col == 0) {
 				return (grid[0][0] == player && grid[1][0] == player) ||
 						(grid[2][1] == player && grid[2][2] == player) ||
 						(grid[1][1] == player && grid[0][2] == player);
-			} else if(move.col == 1) {
+			} else if(col == 1) {
 				return (grid[2][0] == player && grid[2][2] == player) ||
 						(grid[0][1] == player && grid[1][1] == player);
 			} else {
