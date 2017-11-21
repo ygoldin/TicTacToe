@@ -17,11 +17,15 @@ public class PlayAgainstBot {
 		System.out.println("Welcome to Tic-Tac-Toe!");
 		int playerGoingFirst;
 		do {
-			System.out.println("Do you want to go first (1) or second (2)? ");
+			System.out.print("Do you want to go first (1) or second (2)? ");
 			playerGoingFirst = INPUT.nextInt();
 			INPUT.nextLine();
 		} while(playerGoingFirst != 1 && playerGoingFirst != 2);
 		Board gameBoard = new Board(playerGoingFirst);
+		while(!gameBoard.isGameOver()) {
+			System.out.println(gameBoard);
+			break;
+		}
 	}
 	
 	private static boolean playAgain() {

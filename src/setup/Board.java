@@ -136,4 +136,22 @@ public class Board {
 		}
 		return winner;
 	}
+	
+	public String toString() {
+		String blank = "   |   |   \n";
+		String result = "";
+		for(int r = 0; r < SIZE; r++) {
+			result += blank;
+			for(int c = 0; c < SIZE - 1; c++) {
+				result += " " + grid[r][c] + " |";
+			}
+			result += " " + grid[r][SIZE-1] + "\n";
+			if(r < SIZE-1) {
+				result += "___|___|___\n";
+			} else {
+				result += blank;
+			}
+		}
+		return result;
+	}
 }
