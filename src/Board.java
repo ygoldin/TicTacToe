@@ -10,14 +10,17 @@ public class Board {
 	//1 means player1 starts first, 2 means player2 starts first
 	//throws IllegalArgumentException if an invalid player number is passed in
 	public Board(int whoStarts) {
-		if(whoStarts != 1 && whoStarts != 2) {
-			throw new IllegalArgumentException("invalid starting player");
-		}
-		grid = new char[SIZE][SIZE];
-		turn = whoStarts-1;
+		this(whoStarts-1, new char[SIZE][SIZE]);
 	}
 	
+	//creates a new empty tic-tac-toe board with the given player starting first
+	//0 means player1 starts first, 1 means player2 starts first
+	//throws IllegalArgumentException if an invalid player number is passed in
+	//sets the board to have the given grid layout
 	private Board(int whoStarts, char[][] grid) {
+		if(whoStarts != 0 && whoStarts != 1) {
+			throw new IllegalArgumentException("invalid starting player");
+		}
 		this.grid = grid;
 		turn = whoStarts;
 	}
@@ -97,6 +100,7 @@ public class Board {
 		}
 	}
 	
+	// returns a copy of the current board
 	public Board copy() {
 		char[][] copyGrid = new char[SIZE][SIZE];
 		for(int r = 0; r < SIZE; r++) {
@@ -117,8 +121,9 @@ public class Board {
 		return movesMade == SIZE*SIZE;
 	}
 	
+	// returns true if the game is over (a draw or victory)
 	public boolean isGameOver() {
-		return movesMade == SIZE*SIZE || winner != 0;
+		return isFull() || winner != 0;
 	}
 	
 	//returns 1 if player1 won, 2 if player2 won
