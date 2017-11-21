@@ -1,3 +1,5 @@
+package setup;
+
 public class Board {
 	public static final int SIZE = 3;
 	private char[][] grid;

@@ -1,7 +1,12 @@
+package setup;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
+
+import setup.GridPosition;
+import setup.Board;
 
 public class Minimax {
 	private static final ForkJoinPool POOL = new ForkJoinPool();

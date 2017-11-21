@@ -1,3 +1,4 @@
+package setup;
 
 public class GridPosition {
 	int row, col;
