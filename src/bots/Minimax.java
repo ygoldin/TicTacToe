@@ -1,16 +1,26 @@
+package bots;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
+import setup.GridPosition;
+import setup.Board;
+
 public class Minimax {
 	private static final ForkJoinPool POOL = new ForkJoinPool();
 	
+	// returns the best move for the current player
 	public static GridPosition bestMove(Board board) {
-		return POOL.invoke(new SearchTask(board)).position;
+		GridPosition result = POOL.invoke(new SearchTask(board)).position;
+		if(result == null) {
+			throw new IllegalStateException("game is already over");
+		}
+		return result;
 	}
 	@SuppressWarnings("serial")
-	private class SearchTask extends RecursiveTask<BestMove> {
+	private static class SearchTask extends RecursiveTask<BestMove> {
 		Board board;
 		
 		public SearchTask(Board board) {
@@ -34,7 +44,9 @@ public class Minimax {
 					}
 				}
 			}
-			
+			if(possibleMoves.isEmpty()) {
+				return new BestMove(null, 0);
+			}
 			List<SearchTask> tasks = new ArrayList<SearchTask>();
 			GridPosition firstMove = possibleMoves.get(0);
 			Board boardCopy = board.copy();

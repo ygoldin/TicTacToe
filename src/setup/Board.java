@@ -1,3 +1,5 @@
+package setup;
+
 public class Board {
 	public static final int SIZE = 3;
 	private char[][] grid;
@@ -28,10 +30,10 @@ public class Board {
 	// returns whether a spot in the tic-tac-toe board is empty
 	// throws IllegalArgumentException if the given spot is outside of the grid
 	public boolean isEmptySpot(int row, int col) {
-		if(row < 1 || row > SIZE || col < 1 || col > SIZE) {
+		if(row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
 			throw new IllegalArgumentException("invalid location");
 		}
-		char cur = grid[row-1][col-1];
+		char cur = grid[row][col];
 		return cur != PLAYERS[0] && cur != PLAYERS[1];
 	}
 	
@@ -47,8 +49,8 @@ public class Board {
 		if(isGameOver()) {
 			throw new IllegalStateException("game over");
 		}
-		grid[row-1][col-1] = PLAYERS[turn];
-		boolean won = (movesMade > 4) && causedWin(row-1,col-1, PLAYERS[turn]);
+		grid[row][col] = PLAYERS[turn];
+		boolean won = (movesMade > 4) && causedWin(row,col, PLAYERS[turn]);
 		if(won) {
 			winner = turn+1;
 		}
@@ -126,12 +128,30 @@ public class Board {
 		return isFull() || winner != 0;
 	}
 	
-	//returns 1 if player1 won, 2 if player2 won
+	//returns 0 if the game ended in a draw, 1 if player1 won, 2 if player2 won
 	//throws IllegalStateException if the game is not over
 	public int winner() {
 		if(!isGameOver()) {
 			throw new IllegalStateException("game not over");
 		}
 		return winner;
+	}
+	
+	public String toString() {
+		String blank = "   |   |   \n";
+		String result = "";
+		for(int r = 0; r < SIZE; r++) {
+			result += blank;
+			for(int c = 0; c < SIZE - 1; c++) {
+				result += " " + grid[r][c] + " |";
+			}
+			result += " " + grid[r][SIZE-1] + "\n";
+			if(r < SIZE-1) {
+				result += "___|___|___\n";
+			} else {
+				result += blank;
+			}
+		}
+		return result;
 	}
 }
