@@ -31,9 +31,9 @@ public class Minimax {
 		protected BestMove compute() {
 			if(board.isGameOver()) { 
 				if(!board.isFull()) {//game over when it becomes your turn -> you lost
-					return new BestMove(null, -1);
+					return new BestMove(null, -1, 0);
 				}
-				return new BestMove(null, 0); //board is full -> draw
+				return new BestMove(null, 0, 0); //board is full -> draw
 			}
 			List<GridPosition> possibleMoves = new ArrayList<GridPosition>();
 			for(int r = 0; r < Board.SIZE; r++) {
@@ -45,7 +45,7 @@ public class Minimax {
 				}
 			}
 			if(possibleMoves.isEmpty()) {
-				return new BestMove(null, 0);
+				return new BestMove(null, 0, 0);
 			}
 			List<SearchTask> tasks = new ArrayList<SearchTask>();
 			GridPosition firstMove = possibleMoves.get(0);
@@ -62,25 +62,42 @@ public class Minimax {
 			}
 			BestMove best = first.compute();
 			GridPosition bestMove = firstMove;
-			int bestValue = -best.gameResult;
+			best.negate();
 			for(int i = 0; i < tasks.size(); i++) {
-				int curResult = -tasks.get(i).join().gameResult;
-				if(curResult > bestValue) {
+				BestMove cur = tasks.get(i).join();
+				cur.negate();
+				if(cur.compareTo(best) > 0) {
 					bestMove = possibleMoves.get(i+1);
-					bestValue = curResult;
+					best = cur;
 				}
 			}
-			return new BestMove(bestMove, bestValue);
+			return new BestMove(bestMove, best.gameResult, best.movesUntilResult);
 		} 
 	}
 	
 	private static class BestMove {
 		GridPosition position;
 		int gameResult;
+		int movesUntilResult;
 		
-		public BestMove(GridPosition position, int gameResult) {
+		public BestMove(GridPosition position, int gameResult, int movesUntilResult) {
 			this.position = position;
 			this.gameResult = gameResult;
+			this.movesUntilResult = movesUntilResult;
+		}
+		
+		public void negate() {
+			gameResult = -gameResult;
+		}
+		
+		public int compareTo(BestMove other) {
+			if(gameResult != other.gameResult) {
+				return gameResult - other.gameResult;
+			}
+			if(gameResult != -1) {
+				return -(movesUntilResult - other.movesUntilResult);
+			}
+			return movesUntilResult - other.movesUntilResult;
 		}
 	}
 
