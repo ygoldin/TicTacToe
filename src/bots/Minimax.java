@@ -44,7 +44,9 @@ public class Minimax {
 					}
 				}
 			}
-			
+			if(possibleMoves.isEmpty()) {
+				return new BestMove(null, 0);
+			}
 			List<SearchTask> tasks = new ArrayList<SearchTask>();
 			GridPosition firstMove = possibleMoves.get(0);
 			Board boardCopy = board.copy();
