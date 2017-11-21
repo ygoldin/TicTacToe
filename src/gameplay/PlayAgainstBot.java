@@ -1,8 +1,10 @@
 package gameplay;
 
 import java.util.Scanner;
+
+import bots.LazyBot;
 import setup.Board;
-import setup.Minimax;
+import setup.GridPosition;
 
 public class PlayAgainstBot {
 	private static final Scanner INPUT = new Scanner(System.in);
@@ -21,11 +23,51 @@ public class PlayAgainstBot {
 			playerGoingFirst = INPUT.nextInt();
 			INPUT.nextLine();
 		} while(playerGoingFirst != 1 && playerGoingFirst != 2);
+		
 		Board gameBoard = new Board(playerGoingFirst);
+		System.out.println(gameBoard);
+		boolean playersTurn = playerGoingFirst == 1;
 		while(!gameBoard.isGameOver()) {
-			System.out.println(gameBoard);
-			break;
+			playOneMove(gameBoard, playersTurn);
 		}
+		
+		int winner = gameBoard.winner();
+		if(winner == 0) {
+			System.out.println("It's a draw!");
+		} else if(winner == playerGoingFirst) {
+			System.out.println("You won! Congrats!");
+		} else {
+			System.out.println("The bot won, good luck next time");
+		}
+	}
+	
+	private static void playOneMove(Board gameBoard, boolean playersTurn) {
+		int row, col;
+		if(playersTurn) {
+			do {
+				System.out.println("Please enter valid dimension sizes (1-" + Board.SIZE + ") for an empty spot");
+				do {
+					System.out.print("Which row? ");
+					row = INPUT.nextInt();
+					INPUT.nextLine();
+				} while(invalidDimension(row));
+				do {
+					System.out.print("Which col? ");
+					col = INPUT.nextInt();
+					INPUT.nextLine();
+				} while(invalidDimension(col));
+			} while(!gameBoard.isEmptySpot(row, col));
+		} else {
+			GridPosition best = LazyBot.bestMove(gameBoard);
+			row = best.row;
+			col = best.col;
+		}
+		gameBoard.makeMove(row, col);
+		System.out.println(gameBoard);
+	}
+	
+	private static boolean invalidDimension(int dim) {
+		return dim < 1 || dim > Board.SIZE;
 	}
 	
 	private static boolean playAgain() {

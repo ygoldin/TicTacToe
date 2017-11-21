@@ -128,7 +128,7 @@ public class Board {
 		return isFull() || winner != 0;
 	}
 	
-	//returns 1 if player1 won, 2 if player2 won
+	//returns 0 if the game ended in a draw, 1 if player1 won, 2 if player2 won
 	//throws IllegalStateException if the game is not over
 	public int winner() {
 		if(!isGameOver()) {
