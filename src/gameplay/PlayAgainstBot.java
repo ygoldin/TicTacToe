@@ -3,6 +3,7 @@ package gameplay;
 import java.util.Scanner;
 
 import bots.LazyBot;
+import bots.Minimax;
 import setup.Board;
 import setup.GridPosition;
 
@@ -61,7 +62,7 @@ public class PlayAgainstBot {
 			} while(!gameBoard.isEmptySpot(row, col));
 		} else {
 			System.out.println("\n Bot moved:");
-			GridPosition best = LazyBot.bestMove(gameBoard);
+			GridPosition best = Minimax.bestMove(gameBoard);
 			row = best.row;
 			col = best.col;
 		}

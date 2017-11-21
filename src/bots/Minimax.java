@@ -20,7 +20,7 @@ public class Minimax {
 		return result;
 	}
 	@SuppressWarnings("serial")
-	private class SearchTask extends RecursiveTask<BestMove> {
+	private static class SearchTask extends RecursiveTask<BestMove> {
 		Board board;
 		
 		public SearchTask(Board board) {
