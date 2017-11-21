@@ -29,6 +29,7 @@ public class PlayAgainstBot {
 		boolean playersTurn = playerGoingFirst == 1;
 		while(!gameBoard.isGameOver()) {
 			playOneMove(gameBoard, playersTurn);
+			playersTurn = !playersTurn;
 		}
 		
 		int winner = gameBoard.winner();
@@ -45,7 +46,8 @@ public class PlayAgainstBot {
 		int row, col;
 		if(playersTurn) {
 			do {
-				System.out.println("Please enter valid dimension sizes (1-" + Board.SIZE + ") for an empty spot");
+				System.out.println("Please enter valid dimension sizes (0-" + (Board.SIZE-1) +
+						") for an empty spot");
 				do {
 					System.out.print("Which row? ");
 					row = INPUT.nextInt();
@@ -58,6 +60,7 @@ public class PlayAgainstBot {
 				} while(invalidDimension(col));
 			} while(!gameBoard.isEmptySpot(row, col));
 		} else {
+			System.out.println("\n Bot moved:");
 			GridPosition best = LazyBot.bestMove(gameBoard);
 			row = best.row;
 			col = best.col;
@@ -67,7 +70,7 @@ public class PlayAgainstBot {
 	}
 	
 	private static boolean invalidDimension(int dim) {
-		return dim < 1 || dim > Board.SIZE;
+		return dim < 0 || dim >= Board.SIZE;
 	}
 	
 	private static boolean playAgain() {

@@ -30,10 +30,10 @@ public class Board {
 	// returns whether a spot in the tic-tac-toe board is empty
 	// throws IllegalArgumentException if the given spot is outside of the grid
 	public boolean isEmptySpot(int row, int col) {
-		if(row < 1 || row > SIZE || col < 1 || col > SIZE) {
+		if(row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
 			throw new IllegalArgumentException("invalid location");
 		}
-		char cur = grid[row-1][col-1];
+		char cur = grid[row][col];
 		return cur != PLAYERS[0] && cur != PLAYERS[1];
 	}
 	
@@ -49,8 +49,8 @@ public class Board {
 		if(isGameOver()) {
 			throw new IllegalStateException("game over");
 		}
-		grid[row-1][col-1] = PLAYERS[turn];
-		boolean won = (movesMade > 4) && causedWin(row-1,col-1, PLAYERS[turn]);
+		grid[row][col] = PLAYERS[turn];
+		boolean won = (movesMade > 4) && causedWin(row,col, PLAYERS[turn]);
 		if(won) {
 			winner = turn+1;
 		}
