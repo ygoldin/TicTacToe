@@ -31,8 +31,15 @@ public class Board {
 		turn = whoStarts;
 	}
 	
-	// returns whether a spot in the tic-tac-toe board is empty
-	// throws IllegalArgumentException if the given spot is outside of the grid
+	/**
+	 * returns whether a spot in the tic-tac-toe board is empty
+	 * 
+	 * @param row The row of the spot
+	 * @param col The column of the spot
+	 * @return true if the spot is empty, false otherwise
+	 * @throws IllegalArgumentException if either 'row' or 'col' are outside of the range [0, SIZE - 1]
+	 * inclusive
+	 */
 	public boolean isEmptySpot(int row, int col) {
 		if(row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
 			throw new IllegalArgumentException("invalid location");
@@ -41,25 +48,26 @@ public class Board {
 		return cur != PLAYERS[0] && cur != PLAYERS[1];
 	}
 	
-	// marks the given spot for the current player
-	// returns true if the move resulted in a win
-	// returns false if not
-	// throws IllegalArgumentException if the given spot is outside of the grid or is not empty
-	// throws IllegalStateException if the game is over
+	/**
+	 * marks the given spot for the current player
+	 * 
+	 * @param row The row of the spot
+	 * @param col The column of the spot
+	 * @throws IllegalStateException if the game is over
+	 * @throws IllegalArgumentException if the given spot is out of bounds of the grid
+	 */
 	public void makeMove(int row, int col) {
-		if(!isEmptySpot(row, col)) {
-			throw new IllegalArgumentException("not empty");
-		}
 		if(isGameOver()) {
 			throw new IllegalStateException("game over");
+		} else if(!isEmptySpot(row, col)) {
+			throw new IllegalArgumentException("not empty");
 		}
 		grid[row][col] = PLAYERS[turn];
-		boolean won = (movesMade > 4) && causedWin(row,col, PLAYERS[turn]);
-		if(won) {
+		movesMade++;
+		if(causedWin(row, col, PLAYERS[turn])) {
 			winner = turn+1;
 		}
-		turn = (turn+1)%2;
-		movesMade++;
+		turn = (turn + 1) % 2;
 	}
 	
 	// returns true if the given move caused the given player to win
