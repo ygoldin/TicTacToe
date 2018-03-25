@@ -60,51 +60,50 @@ public class TicTacToeBoard {
 			throw new IllegalArgumentException("not empty");
 		}
 		grid[row][col] = PLAYERS[turn];
-		movesMade++;
-		if(causedWin(row, col, PLAYERS[turn])) {
-			winner = turn+1;
+		if(causedWin(row, col)) {
+			winner = turn + 1;
 		}
+		movesMade++;
 		turn = (turn + 1) % 2;
 	}
 	
-	// returns true if the given move caused the given player to win
-	private boolean causedWin(int row, int col, char player) {
-		return causedWinHorizontally(row, player) || causedWinVertically(col, player) ||
-				causedWinDiagonally(player);
+	// returns true if the given move caused the current player to win
+	private boolean causedWin(int row, int col) {
+		return causedWinHorizontally(row) || causedWinVertically(col) || causedWinDiagonally();
 	}
 	
-	// returns true if the given player won horizontally
-	private boolean causedWinHorizontally(int row, char player) {
+	// returns true if the current player won horizontally
+	private boolean causedWinHorizontally(int row) {
 		for(int c = 0; c < SIZE; c++) {
-			if(grid[row][c] != player) {
+			if(grid[row][c] != PLAYERS[turn]) {
 				return false;
 			}
 		}
 		return true;
 	}
 	
-	// returns true if the given player won vertically
-	private boolean causedWinVertically(int col, char player) {
+	// returns true if the current player won vertically
+	private boolean causedWinVertically(int col) {
 		for(int r = 0; r < SIZE; r++) {
-			if(grid[r][col] != player) {
+			if(grid[r][col] != PLAYERS[turn]) {
 				return false;
 			}
 		}
 		return true;
 	}
 	
-	// returns true if the given player won on a diagonal
-	private boolean causedWinDiagonally(char player) {
+	// returns true if the current player won on a diagonal
+	private boolean causedWinDiagonally() {
 		boolean result = true;
 		for(int i = 0; i < SIZE; i++) {
-			if(grid[i][i] != player) {
+			if(grid[i][i] != PLAYERS[turn]) {
 				result = false;
 				break;
 			}
 		}
 		if(!result) {
 			for(int i = 0; i < SIZE; i++) {
-				if(grid[SIZE - 1 - i][i] != player) {
+				if(grid[SIZE - 1 - i][i] != PLAYERS[turn]) {
 					return false;
 				}
 			}
