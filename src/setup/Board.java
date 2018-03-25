@@ -1,16 +1,20 @@
 package setup;
 
 public class Board {
-	public static final int SIZE = 3;
 	private char[][] grid;
-	private static final char[] PLAYERS = {'X', 'O'};
 	private int turn;
 	private int movesMade;
 	private int winner;
 	
-	//creates a new empty tic-tac-toe board with the given player starting first
-	//1 means player1 starts first, 2 means player2 starts first
-	//throws IllegalArgumentException if an invalid player number is passed in
+	public static final int SIZE = 3;
+	public static final char[] PLAYERS = {'X', 'O'};
+	
+	/**
+	 * creates a new empty tic-tac-toe board with the given player starting first
+	 *  
+	 * @param whoStarts The first player. 1 means player1 starts first, 2 means player2 starts first
+	 * @throws IllegalArgumentException if an invalid player number is passed in
+	 */
 	public Board(int whoStarts) {
 		this(whoStarts-1, new char[SIZE][SIZE]);
 	}
@@ -60,49 +64,54 @@ public class Board {
 	
 	// returns true if the given move caused the given player to win
 	private boolean causedWin(int row, int col, char player) {
-		if(row == 0) {
-			if(col == 0) {
-				return (grid[0][1] == player && grid[0][2] == player) ||
-						(grid[1][0] == player && grid[2][0] == player) ||
-						(grid[1][1] == player && grid[2][2] == player);
-			} else if(col == 1) {
-				return (grid[0][0] == player && grid[0][2] == player) ||
-						(grid[1][1] == player && grid[2][1] == player);
-			} else {
-				return (grid[0][0] == player && grid[0][1] == player) ||
-						(grid[1][2] == player && grid[2][2] == player) ||
-						(grid[1][1] == player && grid[2][0] == player);
-			}
-		} else if(row == 1) {
-			if(col == 0) {
-				return (grid[0][0] == player && grid[2][0] == player) ||
-						(grid[1][1] == player && grid[1][2] == player);
-			} else if(col == 1) {
-				return (grid[0][0] == player && grid[2][2] == player) ||
-						(grid[2][0] == player && grid[0][2] == player) ||
-						(grid[0][1] == player && grid[2][1] == player) ||
-						(grid[1][0] == player && grid[1][2] == player);
-			} else {
-				return (grid[1][0] == player && grid[1][1] == player) ||
-						(grid[0][2] == player && grid[2][2] == player);
-			}
-		} else {
-			if(col == 0) {
-				return (grid[0][0] == player && grid[1][0] == player) ||
-						(grid[2][1] == player && grid[2][2] == player) ||
-						(grid[1][1] == player && grid[0][2] == player);
-			} else if(col == 1) {
-				return (grid[2][0] == player && grid[2][2] == player) ||
-						(grid[0][1] == player && grid[1][1] == player);
-			} else {
-				return (grid[2][0] == player && grid[2][1] == player) ||
-						(grid[0][2] == player && grid[1][2] == player) ||
-						(grid[1][1] == player && grid[0][0] == player);
-			}
-		}
+		return causedWinHorizontally(row, player) || causedWinVertically(col, player) ||
+				causedWinDiagonally(player);
 	}
 	
-	// returns a copy of the current board
+	// returns true if the given player won horizontally
+	private boolean causedWinHorizontally(int row, char player) {
+		for(int c = 0; c < SIZE; c++) {
+			if(grid[row][c] != player) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	// returns true if the given player won vertically
+	private boolean causedWinVertically(int col, char player) {
+		for(int r = 0; r < SIZE; r++) {
+			if(grid[r][col] != player) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	// returns true if the given player won on a diagonal
+	private boolean causedWinDiagonally(char player) {
+		boolean result = true;
+		for(int i = 0; i < SIZE; i++) {
+			if(grid[i][i] != player) {
+				result = false;
+				break;
+			}
+		}
+		if(!result) {
+			for(int i = 0; i < SIZE; i++) {
+				if(grid[SIZE - 1 - i][i] != player) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * returns a copy of the board
+	 * 
+	 * @return a copy of the board
+	 */
 	public Board copy() {
 		char[][] copyGrid = new char[SIZE][SIZE];
 		for(int r = 0; r < SIZE; r++) {
@@ -113,23 +122,39 @@ public class Board {
 		return new Board(turn, copyGrid);
 	}
 	
-	// returns 1 if it's p1s turn, 2 if p2s
+	/**
+	 * returns whose turn it is
+	 * 
+	 * @return 1 if player 1s, 2 if player 2s
+	 */
 	public int curPlayerTurn() {
 		return turn + 1;
 	}
 	
-	// returns true if the board is filled up
+	/**
+	 * returns if the board is full
+	 * 
+	 * @return true if the board is full, false otherwise
+	 */
 	public boolean isFull() {
 		return movesMade == SIZE*SIZE;
 	}
 	
-	// returns true if the game is over (a draw or victory)
+	/**
+	 * checks if the game is over
+	 * 
+	 * @return true if the game is over (victory or draw), false otherwise
+	 */
 	public boolean isGameOver() {
 		return isFull() || winner != 0;
 	}
 	
-	//returns 0 if the game ended in a draw, 1 if player1 won, 2 if player2 won
-	//throws IllegalStateException if the game is not over
+	/**
+	 * returns the winner
+	 * 
+	 * @return 0 if the game ended in a draw, 1 if player1 won, 2 if player2 won
+	 * @throws IllegalStateException if the game is not over
+	 */
 	public int winner() {
 		if(!isGameOver()) {
 			throw new IllegalStateException("game not over");
@@ -137,6 +162,7 @@ public class Board {
 		return winner;
 	}
 	
+	@Override
 	public String toString() {
 		String blank = "   |   |   \n";
 		String result = "";
