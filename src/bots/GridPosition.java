@@ -1,4 +1,4 @@
-package setup;
+package bots;
 
 public class GridPosition {
 	public int row, col;

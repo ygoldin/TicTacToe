@@ -1,11 +1,8 @@
-package gameplay;
+package bots;
 
 import java.util.Scanner;
 
-import bots.LazyBot;
-import bots.Minimax;
 import setup.TicTacToeBoard;
-import setup.GridPosition;
 
 public class PlayAgainstBot {
 	private static final Scanner INPUT = new Scanner(System.in);

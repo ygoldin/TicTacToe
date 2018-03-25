@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
-import setup.GridPosition;
 import setup.TicTacToeBoard;
 
 public class Minimax {

@@ -1,7 +1,6 @@
 package bots;
 
 import setup.TicTacToeBoard;
-import setup.GridPosition;
 
 public class LazyBot {
 	public static GridPosition bestMove(TicTacToeBoard board) {
