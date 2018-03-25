@@ -6,13 +6,13 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
 import setup.GridPosition;
-import setup.Board;
+import setup.TicTacToeBoard;
 
 public class Minimax {
 	private static final ForkJoinPool POOL = new ForkJoinPool();
 	
 	// returns the best move for the current player
-	public static GridPosition bestMove(Board board) {
+	public static GridPosition bestMove(TicTacToeBoard board) {
 		GridPosition result = POOL.invoke(new SearchTask(board)).position;
 		if(result == null) {
 			throw new IllegalStateException("game is already over");
@@ -21,9 +21,9 @@ public class Minimax {
 	}
 	@SuppressWarnings("serial")
 	private static class SearchTask extends RecursiveTask<BestMove> {
-		Board board;
+		TicTacToeBoard board;
 		
-		public SearchTask(Board board) {
+		public SearchTask(TicTacToeBoard board) {
 			this.board = board;
 		}
 
@@ -36,8 +36,8 @@ public class Minimax {
 				return new BestMove(null, 0); //board is full -> draw
 			}
 			List<GridPosition> possibleMoves = new ArrayList<GridPosition>();
-			for(int r = 0; r < Board.SIZE; r++) {
-				for(int c = 0; c < Board.SIZE; c++) {
+			for(int r = 0; r < TicTacToeBoard.SIZE; r++) {
+				for(int c = 0; c < TicTacToeBoard.SIZE; c++) {
 					GridPosition cur = new GridPosition(r, c);
 					if(board.isEmptySpot(cur.row, cur.col)) {
 						possibleMoves.add(cur);
@@ -49,7 +49,7 @@ public class Minimax {
 			}
 			List<SearchTask> tasks = new ArrayList<SearchTask>();
 			GridPosition firstMove = possibleMoves.get(0);
-			Board boardCopy = board.copy();
+			TicTacToeBoard boardCopy = board.copy();
 			boardCopy.makeMove(firstMove.row, firstMove.col);
 			SearchTask first = new SearchTask(boardCopy);
 			for(int i = 1; i < possibleMoves.size(); i++) {

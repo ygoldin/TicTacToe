@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 import bots.LazyBot;
 import bots.Minimax;
-import setup.Board;
+import setup.TicTacToeBoard;
 import setup.GridPosition;
 
 public class PlayAgainstBot {
@@ -25,7 +25,7 @@ public class PlayAgainstBot {
 			INPUT.nextLine();
 		} while(playerGoingFirst != 1 && playerGoingFirst != 2);
 		
-		Board gameBoard = new Board(playerGoingFirst);
+		TicTacToeBoard gameBoard = new TicTacToeBoard(playerGoingFirst);
 		System.out.println(gameBoard);
 		boolean playersTurn = playerGoingFirst == 1;
 		while(!gameBoard.isGameOver()) {
@@ -43,11 +43,11 @@ public class PlayAgainstBot {
 		}
 	}
 	
-	private static void playOneMove(Board gameBoard, boolean playersTurn) {
+	private static void playOneMove(TicTacToeBoard gameBoard, boolean playersTurn) {
 		int row, col;
 		if(playersTurn) {
 			do {
-				System.out.println("Please enter valid dimension sizes (0-" + (Board.SIZE-1) +
+				System.out.println("Please enter valid dimension sizes (0-" + (TicTacToeBoard.SIZE-1) +
 						") for an empty spot");
 				do {
 					System.out.print("Which row? ");
@@ -71,7 +71,7 @@ public class PlayAgainstBot {
 	}
 	
 	private static boolean invalidDimension(int dim) {
-		return dim < 0 || dim >= Board.SIZE;
+		return dim < 0 || dim >= TicTacToeBoard.SIZE;
 	}
 	
 	private static boolean playAgain() {

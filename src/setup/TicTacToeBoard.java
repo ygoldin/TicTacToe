@@ -1,6 +1,6 @@
 package setup;
 
-public class Board {
+public class TicTacToeBoard {
 	private char[][] grid;
 	private int turn;
 	private int movesMade;
@@ -15,20 +15,17 @@ public class Board {
 	 * @param whoStarts The first player. 1 means player1 starts first, 2 means player2 starts first
 	 * @throws IllegalArgumentException if an invalid player number is passed in
 	 */
-	public Board(int whoStarts) {
-		this(whoStarts-1, new char[SIZE][SIZE]);
+	public TicTacToeBoard(int whoStarts) {
+		this(whoStarts - 1, new char[SIZE][SIZE]);
 	}
 	
-	//creates a new empty tic-tac-toe board with the given player starting first
+	//creates a new empty tic-tac-toe board with the given player going next
 	//0 means player1 starts first, 1 means player2 starts first
-	//throws IllegalArgumentException if an invalid player number is passed in
 	//sets the board to have the given grid layout
-	private Board(int whoStarts, char[][] grid) {
-		if(whoStarts != 0 && whoStarts != 1) {
-			throw new IllegalArgumentException("invalid starting player");
-		}
+	private TicTacToeBoard(int whoseTurn, char[][] grid) {
+		assert(whoseTurn == 0 || whoseTurn == 1);
 		this.grid = grid;
-		turn = whoStarts;
+		turn = whoseTurn;
 	}
 	
 	/**
@@ -120,14 +117,14 @@ public class Board {
 	 * 
 	 * @return a copy of the board
 	 */
-	public Board copy() {
+	public TicTacToeBoard copy() {
 		char[][] copyGrid = new char[SIZE][SIZE];
 		for(int r = 0; r < SIZE; r++) {
 			for(int c = 0; c < SIZE; c++) {
 				copyGrid[r][c] = grid[r][c];
 			}
 		}
-		return new Board(turn, copyGrid);
+		return new TicTacToeBoard(turn, copyGrid);
 	}
 	
 	/**
