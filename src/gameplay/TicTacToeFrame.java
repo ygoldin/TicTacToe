@@ -27,6 +27,26 @@ public class TicTacToeFrame extends JFrame {
 		add(buttonPanel);
 	}
 	
+	private void gameOverActions() {
+		String message = "Game over - ";
+		int winner = gameboard.winner();
+		if(winner == 0) {
+			message += "It's a draw!";
+		} else {
+			message += "Player " + winner + " wins!";
+		}
+		if(JOptionPane.showConfirmDialog(this, message, "Play again?", JOptionPane.YES_NO_OPTION)
+				== JOptionPane.YES_OPTION) { //play again
+			gameboard = new TicTacToeBoard(1);
+			for(int r = 0; r < TicTacToeBoard.SIZE; r++) {
+				for(int c = 0; c < TicTacToeBoard.SIZE; c++) {
+					GridSpot cur = gridButtons[r][c];
+					cur.setText(null);
+				}
+			}
+		}
+	}
+	
 	private class GridSpot extends JButton {
 		private static final int FONT_SIZE = 40;
 		private static final String FONT_NAME = "Arial";
@@ -38,6 +58,9 @@ public class TicTacToeFrame extends JFrame {
 					int curPlayer = gameboard.curPlayerTurn();
 					gameboard.makeMove(row, col);
 					setText("" + TicTacToeBoard.PLAYERS[curPlayer - 1]);
+					if(gameboard.isGameOver()) {
+						gameOverActions();
+					}
 				}
 			});
 		}
