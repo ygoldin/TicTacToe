@@ -1,5 +1,9 @@
 package setup;
 
+/**
+ * TicTacToeBoard can be used to model a game of TicTacToe
+ * @author Yael Goldin
+ */
 public class TicTacToeBoard {
 	private char[][] grid;
 	private int turn;

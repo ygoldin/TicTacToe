@@ -2,6 +2,10 @@ package gameplay;
 
 import java.awt.EventQueue;
 
+/**
+ * PlayTicTacToe can be launch a game of TicTacToe
+ * @author Yael Goldin
+ */
 public class PlayTicTacToe {
 
 	public static void main(String[] args) {
